@@ -26,9 +26,6 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
     // The score
     private var score = 0
 
-    // The wave number
-    private var waves = 1
-
     // Lives
     private var lives = 3
 
@@ -37,11 +34,11 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
     // How menacing should the sound be?
     private var menaceInterval: Long = 1000
 
+    //                      SOUND RELATED SET UP IF WE WANT
     // Which menace sound should play next
-    private var uhOrOh: Boolean = false
+    //private var uhOrOh: Boolean = false
     // When did we last play a menacing sound
-    private var lastMenaceTime = System.currentTimeMillis()
-
+    //private var lastMenaceTime = System.currentTimeMillis()
 
     private fun prepareLevel() {
         // Here we will initialize the game objects
@@ -97,8 +94,7 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
             // Change the brush color
             paint.color = Color.argb(255, 255, 255, 255)
             paint.textSize = 70f
-            canvas.drawText("Score: $score   Lives: $lives Wave: " +
-                    "$waves HI: $highScore", 20f, 75f, paint)
+            canvas.drawText("Score: $score Lives: $lives HI: $highScore", 20f, 75f, paint)
 
             // Draw everything to the screen
             holder.unlockCanvasAndPost(canvas)
@@ -124,6 +120,7 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
         gameThread.start()
     }
 
+    //            THIS NEEDS TO BE CHANGED TO THE MOTION DETECTOR INSTEAD OF TOUCH
     // The SurfaceView class implements onTouchListener
     // So we can override this method and detect screen touches.
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {

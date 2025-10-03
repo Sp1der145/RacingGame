@@ -7,6 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.graphics.Point
 
+//Used https://gamecodeschool.com/kotlin/coding-a-space-invaders-game-in-kotlin/
+//As an integral reference for how to code this project
+
 class MainActivity : AppCompatActivity() {
     private var kotlinDrivingView: KotlinDrivingView? = null
 
