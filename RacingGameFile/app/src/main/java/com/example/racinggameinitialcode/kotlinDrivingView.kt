@@ -1,5 +1,8 @@
 package com.example.racinggameinitialcode
 
+//NOTE FOR FUTURE CONNER HERE IS THE NEXT PART ON THE WEBSITE
+//"Next, we can add the following code to the update function."
+
 import android.content.Context
 //import android.content.SharedPreferences
 import android.graphics.*
@@ -23,6 +26,13 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
     private var canvas: Canvas = Canvas()
     private val paint: Paint = Paint()
 
+    // The players ship
+    private var playerCar: PlayerCar = PlayerCar(context, size.x, size.y)
+
+    // Some Obstacles
+    private val obstacles = ArrayList<Obstacle>()
+    private var numObstacles = 0
+
     // The score
     private var score = 0
 
@@ -42,8 +52,15 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
 
     private fun prepareLevel() {
         // Here we will initialize the game objects
-
-
+        // Build an army of invaders
+        Obstacle.numberOfObstacles = 0
+        numObstacles = 0
+        for (column in 0..10) {
+            for (row in 0..5) {
+                obstacles.add(Obstacle(context, row, column, size.x, size.y))
+                numObstacles++
+            }
+        }
     }
 
     override fun run() {
@@ -74,6 +91,8 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
     private fun update(fps: Long) {
         // Update the state of all the game objects
 
+        // Move the player's ship
+        playerCar.update(fps)
     }
 
     private fun draw() {
@@ -89,6 +108,7 @@ class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(c
             paint.color = Color.argb(255, 0, 255, 0)
 
             // Draw all the game objects here
+            canvas.drawBitmap(playerCar.bitmap, playerCar.position.left,playerCar.position.top, paint)
 
             // Draw the score and remaining lives
             // Change the brush color
