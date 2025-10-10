@@ -12,7 +12,7 @@ class PlayerCar(context: Context,
     // The player ship will be represented by a Bitmap
     var bitmap: Bitmap = BitmapFactory.decodeResource(
         context.resources,
-        R.drawable.playercar)                       //PUT IMAGE IN RES FILE
+        R.drawable.playerCar)                       //PUT IMAGE IN RES FILE
 
     // How wide and high our ship will be
     val width = screenX / 20f
@@ -44,6 +44,15 @@ class PlayerCar(context: Context,
         // stretch the bitmap to a size
         // appropriate for the screen resolution
         bitmap = Bitmap.createScaledBitmap(bitmap,width.toInt() ,height.toInt() ,false)
+    }
+
+
+    fun setTilt(tilt: Float) {
+        moving = when {
+            tilt > 1.5f -> left
+            tilt < -1.5f -> right
+            else -> stopped
+        }
     }
 
     // This update method will be called from update in KotlinDrivingView

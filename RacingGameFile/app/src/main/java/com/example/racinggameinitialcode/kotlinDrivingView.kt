@@ -1,151 +1,235 @@
 package com.example.racinggameinitialcode
 
-//NOTE FOR FUTURE CONNER HERE IS THE NEXT PART ON THE WEBSITE
-//"Next, we can add the following code to the update function."
-
+import android.app.AlertDialog
 import android.content.Context
-//import android.content.SharedPreferences
 import android.graphics.*
-import android.view.SurfaceView
-import android.util.Log
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.view.MotionEvent
+import android.view.SurfaceView
+import kotlin.random.Random
 
-class KotlinDrivingView(context: Context,private val size: Point): SurfaceView(context),
-    Runnable {
+class KotlinDrivingView(context: Context, private val size: Point) :
+    SurfaceView(context), Runnable, SensorEventListener {
 
-    // This is our thread
-    private val gameThread = Thread(this)
-
-    // A boolean which we will set and unset
+    private var gameThread: Thread? = null
     private var playing = false
-
-    // Game is paused at the start
     private var paused = true
 
-    // A Canvas and a Paint object
+    private val paint = Paint()
     private var canvas: Canvas = Canvas()
-    private val paint: Paint = Paint()
 
-    // The players ship
-    private var playerCar: PlayerCar = PlayerCar(context, size.x, size.y)
-
-    // Some Obstacles
+    private val playerCar = PlayerCar(context, size.x, size.y)
     private val obstacles = ArrayList<Obstacle>()
-    private var numObstacles = 0
 
-    // The score
     private var score = 0
-
-    // Lives
     private var lives = 3
+    private var lastObstacleSpawnTime = 0L
+    private var startTime = System.currentTimeMillis()
+    private var scrollY = 0f
 
-    private var highScore =  0
+    // Lane marker setup
+    private val laneMarkers = ArrayList<RectF>()
+    private val lanePaint = Paint().apply {
+        color = Color.WHITE
+        style = Paint.Style.FILL
+    }
+    private val laneCount = 3   // 3 lanes
+    private val dashHeight = 80f
+    private val dashWidth = 10f
+    private val dashGap = 120f
 
-    // How menacing should the sound be?
-    private var menaceInterval: Long = 1000
+    // Road background
+    private var roadBitmap: Bitmap =
+        BitmapFactory.decodeResource(context.resources, R.drawable.road_background)
 
-    //                      SOUND RELATED SET UP IF WE WANT
-    // Which menace sound should play next
-    //private var uhOrOh: Boolean = false
-    // When did we last play a menacing sound
-    //private var lastMenaceTime = System.currentTimeMillis()
+    // Scale the road image to fit the screen width
+    init {
+        roadBitmap = Bitmap.createScaledBitmap(roadBitmap, size.x, size.y, false)
 
-    private fun prepareLevel() {
-        // Here we will initialize the game objects
-        // Build an army of invaders
-        Obstacle.numberOfObstacles = 0
-        numObstacles = 0
-        for (column in 0..10) {
-            for (row in 0..5) {
-                obstacles.add(Obstacle(context, row, column, size.x, size.y))
-                numObstacles++
+        // Initialize lane markers (3 lanes centered)
+        val laneSpacing = size.x / (laneCount + 1)
+        for (i in 1..laneCount) {
+            val x = i * laneSpacing.toFloat()
+            var y = 0f
+            while (y < size.y) {
+                laneMarkers.add(RectF(x - dashWidth / 2, y, x + dashWidth / 2, y + dashHeight))
+                y += dashHeight + dashGap
             }
         }
     }
 
+    // Accelerometer for tilt control
+    private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
     override fun run() {
-        // This variable tracks the game frame rate
-        var fps: Long = 0
+        var fps: Long
 
         while (playing) {
-
-            // Capture the current time
             val startFrameTime = System.currentTimeMillis()
+            val timeThisFrame = startFrameTime - startTime
+            fps = if (timeThisFrame >= 1) 1000 / timeThisFrame else 60
+            startTime = startFrameTime
 
-            // Update the frame
-            if (!paused) {
-                update(fps)
-            }
-
-            // Draw the frame
+            if (!paused) update(fps)
             draw()
-
-            // Calculate the fps rate this frame
-            val timeThisFrame = System.currentTimeMillis() - startFrameTime
-            if (timeThisFrame >= 1) {
-                fps = 1000 / timeThisFrame
-            }
         }
     }
 
     private fun update(fps: Long) {
-        // Update the state of all the game objects
+        // Increase score
+        score += 1
 
-        // Move the player's ship
+        // Move player
         playerCar.update(fps)
+
+        // Scroll the road downward
+        scrollY += (300f / fps)
+        if (scrollY >= size.y) scrollY = 0f
+
+        // Dynamic difficulty: increase obstacle speed over time
+        val speedMultiplier = 1f + (score / 2000f)
+
+        // Spawn obstacles periodically
+        val now = System.currentTimeMillis()
+        if (now - lastObstacleSpawnTime > 1500) {
+            obstacles.add(Obstacle(context, size.x, size.y, speedMultiplier))
+            lastObstacleSpawnTime = now
+        }
+
+        // Move obstacles and check collisions
+        val iterator = obstacles.iterator()
+        while (iterator.hasNext()) {
+            val obj = iterator.next()
+            obj.update(fps)
+
+            // Remove if off screen
+            if (obj.position.top > size.y) {
+                iterator.remove()
+                continue
+            }
+
+            // Collision detection
+            if (RectF.intersects(obj.position, playerCar.position)) {
+                lives--
+                iterator.remove()
+
+                if (lives <= 0) {
+                    paused = true
+                    playing = false
+                    showGameOverDialog()
+                    break
+                }
+            }
+
+            // --- Move lane markers downward ---
+            val laneSpeed = 300f * (1f + (score / 2000f))  // sync with difficulty
+            for (lane in laneMarkers) {
+                lane.top += laneSpeed / fps
+                lane.bottom += laneSpeed / fps
+            }
+
+            // Loop markers when off screen
+            for (lane in laneMarkers) {
+                if (lane.top > size.y) {
+                    lane.offset(0f, -size.y - dashGap)
+                }
+            }
+        }
     }
 
     private fun draw() {
-        // Make sure our drawing surface is valid or the game will crash
-        if (holder.surface.isValid) {
-            // Lock the canvas ready to draw
-            canvas = holder.lockCanvas()
+        if (!holder.surface.isValid) return
+        canvas = holder.lockCanvas()
 
-            // Draw the background color
-            canvas.drawColor(Color.argb(255, 0, 0, 0))
+        // --- Scrolling Background ---
+        val bgY1 = scrollY
+        val bgY2 = scrollY - size.y
+        canvas.drawBitmap(roadBitmap, 0f, bgY1, paint)
+        canvas.drawBitmap(roadBitmap, 0f, bgY2, paint)
 
-            // Choose the brush color for drawing
-            paint.color = Color.argb(255, 0, 255, 0)
-
-            // Draw all the game objects here
-            canvas.drawBitmap(playerCar.bitmap, playerCar.position.left,playerCar.position.top, paint)
-
-            // Draw the score and remaining lives
-            // Change the brush color
-            paint.color = Color.argb(255, 255, 255, 255)
-            paint.textSize = 70f
-            canvas.drawText("Score: $score Lives: $lives HI: $highScore", 20f, 75f, paint)
-
-            // Draw everything to the screen
-            holder.unlockCanvasAndPost(canvas)
+        // --- Lane Markers ---
+        for (lane in laneMarkers) {
+            canvas.drawRect(lane, lanePaint)
         }
+
+        // --- Draw Car ---
+        canvas.drawBitmap(playerCar.bitmap, playerCar.position.left, playerCar.position.top, paint)
+
+        // --- Draw Obstacles ---
+        for (obj in obstacles) {
+            canvas.drawBitmap(obj.bitmap, obj.position.left, obj.position.top, paint)
+        }
+
+        // --- Draw HUD ---
+        paint.color = Color.WHITE
+        paint.textSize = 60f
+        canvas.drawText("Score: $score", 30f, 80f, paint)
+        canvas.drawText("Lives: $lives", size.x - 250f, 80f, paint)
+
+        // --- Game Over Overlay ---
+        if (!playing && paused) {
+            paint.textAlign = Paint.Align.CENTER
+            paint.textSize = 100f
+            canvas.drawText("GAME OVER", size.x / 2f, size.y / 2f, paint)
+            paint.textSize = 70f
+            canvas.drawText("Final Score: $score", size.x / 2f, size.y / 2f + 120f, paint)
+            paint.textAlign = Paint.Align.LEFT
+        }
+
+        holder.unlockCanvasAndPost(canvas)
     }
 
-    // If DrivingActivity is paused/stopped
-    // then shut down our thread.
     fun pause() {
         playing = false
-        try {
-            gameThread.join()
-        } catch (e: InterruptedException) {
-            Log.e("Error:", "joining thread")
-        }
+        sensorManager.unregisterListener(this)
+        try { gameThread?.join() } catch (_: InterruptedException) {}
     }
 
-    // If SpaceInvadersActivity is started then
-    // start our thread.
     fun resume() {
         playing = true
-        prepareLevel()
-        gameThread.start()
+        paused = false
+        lives = 3
+        score = 0
+        scrollY = 0f
+        obstacles.clear()
+        lastObstacleSpawnTime = System.currentTimeMillis()
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+        gameThread = Thread(this)
+        gameThread?.start()
     }
 
-    //            THIS NEEDS TO BE CHANGED TO THE MOTION DETECTOR INSTEAD OF TOUCH
-    // The SurfaceView class implements onTouchListener
-    // So we can override this method and detect screen touches.
-    override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
+    override fun onSensorChanged(event: SensorEvent) {
+        val tilt = event.values[0]
+        playerCar.setTilt(tilt)
+    }
 
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    // Touch input for testing (emulator/desktop)
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                if (event.x > size.x / 2) playerCar.moving = PlayerCar.right
+                else playerCar.moving = PlayerCar.left
+            }
+            MotionEvent.ACTION_UP -> playerCar.moving = PlayerCar.stopped
+        }
         return true
     }
 
+    private fun showGameOverDialog() {
+        post {
+            AlertDialog.Builder(context)
+                .setTitle("Game Over")
+                .setMessage("Final Score: $score\n\nPlay again?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { _, _ -> resume() }
+                .setNegativeButton("Exit") { _, _ -> (context as MainActivity).finish() }
+                .show()
+        }
+    }
 }
