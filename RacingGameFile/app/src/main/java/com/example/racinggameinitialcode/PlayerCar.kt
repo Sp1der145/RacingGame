@@ -47,6 +47,7 @@ class PlayerCar(context: Context,
     }
 
 
+    //Tilting movement
     fun setTilt(tilt: Float) {
         moving = when {
             tilt > 1.5f -> left
