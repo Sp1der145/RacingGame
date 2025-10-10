@@ -124,20 +124,6 @@ class KotlinDrivingView(context: Context, private val size: Point) :
                     break
                 }
             }
-
-            // --- Move lane markers downward ---
-            val laneSpeed = 300f * (1f + (score / 2000f))  // sync with difficulty
-            for (lane in laneMarkers) {
-                lane.top += laneSpeed / fps
-                lane.bottom += laneSpeed / fps
-            }
-
-            // Loop markers when off screen
-            for (lane in laneMarkers) {
-                if (lane.top > size.y) {
-                    lane.offset(0f, -size.y - dashGap)
-                }
-            }
         }
     }
 
@@ -145,16 +131,11 @@ class KotlinDrivingView(context: Context, private val size: Point) :
         if (!holder.surface.isValid) return
         canvas = holder.lockCanvas()
 
-        // --- Scrolling Background ---
+        // --- Scrolling Background ---     NEED TO CHANGE
         val bgY1 = scrollY
         val bgY2 = scrollY - size.y
         canvas.drawBitmap(roadBitmap, 0f, bgY1, paint)
         canvas.drawBitmap(roadBitmap, 0f, bgY2, paint)
-
-        // --- Lane Markers ---
-        for (lane in laneMarkers) {
-            canvas.drawRect(lane, lanePaint)
-        }
 
         // --- Draw Car ---
         canvas.drawBitmap(playerCar.bitmap, playerCar.position.left, playerCar.position.top, paint)
@@ -202,10 +183,13 @@ class KotlinDrivingView(context: Context, private val size: Point) :
         gameThread?.start()
     }
 
+    //Tilt sensors
+    /*
     override fun onSensorChanged(event: SensorEvent) {
         val tilt = event.values[0]
         playerCar.setTilt(tilt)
     }
+     */
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
