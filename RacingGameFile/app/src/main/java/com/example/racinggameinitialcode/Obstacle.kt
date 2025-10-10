@@ -27,9 +27,9 @@ class Obstacle(context: Context, screenX: Int, screenY: Int, speedMultiplier: Fl
 
         // Random image from a set of obstacles
         val obstacleImages = listOf(
-            R.drawable.obstacle1,
-            R.drawable.obstacle2,
-            R.drawable.obstacle3
+            R.drawable.lambo1,
+            R.drawable.semi1,
+            R.drawable.sign1
         )
         val randomImage = obstacleImages[random.nextInt(obstacleImages.size)]
 

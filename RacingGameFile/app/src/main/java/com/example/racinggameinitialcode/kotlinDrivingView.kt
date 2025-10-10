@@ -14,6 +14,10 @@ import kotlin.random.Random
 class KotlinDrivingView(context: Context, private val size: Point) :
     SurfaceView(context), Runnable, SensorEventListener {
 
+    override fun onSensorChanged(event: SensorEvent?){
+
+    }
+
     private var gameThread: Thread? = null
     private var playing = false
     private var paused = true
@@ -43,7 +47,7 @@ class KotlinDrivingView(context: Context, private val size: Point) :
 
     // Road background
     private var roadBitmap: Bitmap =
-        BitmapFactory.decodeResource(context.resources, R.drawable.road_background)
+        BitmapFactory.decodeResource(context.resources, R.drawable.background2)
 
     // Scale the road image to fit the screen width
     init {
