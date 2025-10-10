@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:gravity="center"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="32dp"
+android:background="#202020">
+
+<!-- Lane 1 placeholder -->
+<TextView
+    android:id="@+id/lane1"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:text="Lane 1 (Left)"
+    android:gravity="center"
+    android:textColor="#FFFFFF"
+    android:background="#555555"
+    android:layout_marginBottom="8dp"/>
+
+<!-- Lane 2 placeholder -->
+<TextView
+    android:id="@+id/lane2"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:text="Lane 2 (Center)"
+    android:gravity="center"
+    android:textColor="#FFFFFF"
+    android:background="#777777"
+    android:layout_marginBottom="8dp"/>
+
+<!-- Lane 3 placeholder -->
+<TextView
+    android:id="@+id/lane3"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:text="Lane 3 (Right)"
+    android:gravity="center"
+    android:textColor="#FFFFFF"
+    android:background="#555555"
+    android:layout_marginBottom="24dp"/>
+
+<!-- Car position display -->
+<TextView
+    android:id="@+id/carPositionView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Car is in: Center Lane"
+    android:textColor="#00FF00"
+    android:textSize="24sp"
+    android:padding="16dp" />
+
+</LinearLayout>
