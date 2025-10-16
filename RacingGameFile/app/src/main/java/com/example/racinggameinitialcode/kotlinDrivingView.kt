@@ -192,6 +192,9 @@ class KotlinDrivingView(context: Context, private val size: Point) :
      */
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    override fun onSensorChanged(event: SensorEvent?) {
+        TODO("Not yet implemented")
+    }
 
     // Touch input for testing (emulator/desktop)
     override fun onTouchEvent(event: MotionEvent): Boolean {
