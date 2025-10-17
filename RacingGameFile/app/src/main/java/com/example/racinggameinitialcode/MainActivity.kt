@@ -11,27 +11,20 @@ import android.graphics.Point
 //As an integral reference for how to code this project
 
 class MainActivity : AppCompatActivity() {
-    private var kotlinDrivingView: KotlinDrivingView? = null
+    //private var kotlinDrivingView: KotlinDrivingView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        // Get a Display object to access screen details
+        //val display = windowManager.defaultDisplay
+        // Load the resolution into a Point object
+        //val size = Point()
+        //display.getSize(size)
+
+        // Initialize gameView and set it as the view
+        //kotlinDrivingView = KotlinDrivingView(this, size)   //NEED TO SET UP THE VIEW
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-            // Get a Display object to access screen details
-            val display = windowManager.defaultDisplay
-            // Load the resolution into a Point object
-            val size = Point()
-            display.getSize(size)
-
-            // Initialize gameView and set it as the view
-            kotlinDrivingView = KotlinDrivingView(this, size)   //NEED TO SET UP THE VIEW
-            setContentView(kotlinDrivingView)
     }
 
     // This method executes when the player starts the game
@@ -39,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         // Tell the gameView resume method to execute
-        kotlinDrivingView?.resume()
+        //kotlinDrivingView?.resume()
     }
 
     // This method executes when the player quits the game
@@ -47,6 +40,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         // Tell the gameView pause method to execute
-        kotlinDrivingView?.pause()
-        }
+        //kotlinDrivingView?.pause()
+    }
 }

@@ -10,10 +10,9 @@ import android.hardware.SensorManager
 import android.view.MotionEvent
 import android.view.SurfaceView
 import kotlin.random.Random
-
-class KotlinDrivingView(context: Context, private val size: Point) :
-    SurfaceView(context), Runnable, SensorEventListener {
-
+/*
+class KotlinDrivingView(context: Context, private val size: Point) {
+//SurfaceView(context), Runnable, SensorEventListener
     private var gameThread: Thread? = null
     private var playing = false
     private var paused = true
@@ -43,7 +42,7 @@ class KotlinDrivingView(context: Context, private val size: Point) :
 
     // Road background
     private var roadBitmap: Bitmap =
-        BitmapFactory.decodeResource(context.resources, R.drawable.road_background)
+        BitmapFactory.decodeResource(context.resources, R.drawable.background1)
 
     // Scale the road image to fit the screen width
     init {
@@ -65,7 +64,7 @@ class KotlinDrivingView(context: Context, private val size: Point) :
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-    override fun run() {
+     fun run() {
         var fps: Long
 
         while (playing) {
@@ -192,6 +191,9 @@ class KotlinDrivingView(context: Context, private val size: Point) :
      */
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    override fun onSensorChanged(event: SensorEvent?) {
+        TODO("Not yet implemented")
+    }
 
     // Touch input for testing (emulator/desktop)
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -217,3 +219,4 @@ class KotlinDrivingView(context: Context, private val size: Point) :
         }
     }
 }
+*/
