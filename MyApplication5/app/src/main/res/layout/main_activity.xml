@@ -14,12 +14,4 @@
         android:contentDescription="@string/backgnd"
         android:src="@drawable/background2" />
 
-    <ImageView
-        android:id="@+id/carobj"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/car"
-        android:src="@drawable/car1" />
-
 </FrameLayout>

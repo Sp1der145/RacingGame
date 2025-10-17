@@ -24,8 +24,6 @@ class PostData(i: ImageView?, layout: FrameLayout, t: Tilter) : Runnable {
         imageView?.translationY += 2f
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
         imageView?.translationX = (tilter!!.posX - imageView!!.width / 2f).toFloat()
-
-
     }
 }
 
@@ -69,7 +67,7 @@ class Obstacle(t: Tilter, context: Context, frameLayout: FrameLayout, speedMulti
             imageView?.post(p)
             Thread.sleep(16) // ~60 FPS
 
-            if ((imageView!!.translationY - imageView!!.height / 2f) > 500){
+            if ((imageView!!.translationY) > 410){
                 //frameLayout.removeView(imageView);
                 break
             }

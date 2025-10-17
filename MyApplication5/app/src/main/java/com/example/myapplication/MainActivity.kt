@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.graphics.Point
 import android.graphics.RectF
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,8 +31,14 @@ class MainActivity : ComponentActivity() {
         setContentView(R.layout.main_activity)
 
         val layout = findViewById<FrameLayout>(R.id.myFrameLayout)
+
+        // make tilter and updater
+
+        //val display = windowManager.defaultDisplay
+        val size = Point(1080, 2424)
         val tilter = Tilter(this, layout)
-        val car = findViewById<ImageView>(R.id.carobj)
+        val updater = Updater(this, layout, size)
+
         val background = findViewById<ImageView>(R.id.imageView2)
         val ob = Obstacle(tilter, this, layout, 1f)
 
@@ -40,14 +47,16 @@ class MainActivity : ComponentActivity() {
 
         layout.addView(tilter)
         layout.bringChildToFront(background)
-        layout.bringChildToFront(car)
         layout.bringChildToFront(ob.imageView)
         layout.bringChildToFront(tilter.textView)
+        layout.addView(updater.playerCar!!.imageView)
+        layout.bringChildToFront(updater.playerCar!!.imageView)
 
-        car.translationX = 50f
-        car.translationY = 350f
 
-        Thread(ob).start()
+        //car.translationX = 50f
+        //car.translationY = 350f
+
+        Thread(updater).start()
     }
 }
 
