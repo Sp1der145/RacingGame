@@ -24,7 +24,6 @@ class Tilter(context: Context, layout: FrameLayout) : SensorEventListener, Surfa
 
     init {
         textView = TextView(context)
-
         textView?.text = "asdf"
 
         textView?.textSize = 20f;

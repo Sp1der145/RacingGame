@@ -95,5 +95,6 @@ class Updater(context: Context, layout: FrameLayout, private val size: Point): R
             }
         }
         */
+
     }
 }

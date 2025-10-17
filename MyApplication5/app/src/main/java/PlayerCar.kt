@@ -19,7 +19,7 @@ class CarPoster(i: ImageView?, layout: FrameLayout) : Runnable {
 
     // This data is accessible using ClassName.propertyName
     companion object {
-        // Which ways can the ship move
+        // Which ways can the car move
         const val stopped = 0
         const val left = 1
         const val right = 2
@@ -37,13 +37,13 @@ class CarPoster(i: ImageView?, layout: FrameLayout) : Runnable {
     override fun run() {
         //val screenWidth = Resources.getSystem().displayMetrics.widthPixels
 
-        moving = left
+        moving = right
         // Move as long as it doesn't try and leave the Road
-        if (moving == left) {          //CAN CHANGE FROM SMOOTH TO FAST/AUTOMATIC
-            positionX -= 1f                   //So change 'Speed' to a specific pixel jump for position?
+        if (moving == left && positionX > -375) {
+            positionX -= 8f
         }
-        else if (moving == right && positionX < 1080) {
-            positionX += 450f / 60f
+        else if (moving == right && positionX < 335) {
+            positionX += 8f
         }
 
         imageView?.translationX = positionX
@@ -51,15 +51,7 @@ class CarPoster(i: ImageView?, layout: FrameLayout) : Runnable {
 }
 
 class PlayerCar(context: Context, frameLayout: FrameLayout) {
-
-    // The player ship will be represented by a Bitmap
-    public var imageView: ImageView? = null                //PUT IMAGE IN RES FILE
-
-    // How wide and high our ship will be
-    //val width = screenX / 20f
-    //private val height = screenY / 40f
-
-
+    public var imageView: ImageView? = null
     private var p: CarPoster? = null
 
     // This will hold the pixels per second speed that the ship will move
@@ -68,25 +60,17 @@ class PlayerCar(context: Context, frameLayout: FrameLayout) {
     init{
         imageView = ImageView(context)
         imageView?.setImageResource(R.drawable.car1)
-        imageView?.translationX = 100f;
-        imageView?.translationY = 100f;
-        //frameLayout.addView(imageView)
-        // stretch the bitmap to a size
-        // appropriate for the screen resolution
+
+        // Scale the car size
+        val carWidth = 600
+        val carHeight = 1200
+        val params = FrameLayout.LayoutParams(carWidth, carHeight)
+        params.leftMargin = 275
+        params.topMargin = 800
+        imageView?.layoutParams = params
+
         p = CarPoster(imageView, frameLayout)
     }
-
-
-    //Tilting movement
-    /*
-    fun setTilt(tilt: Float) {
-        moving = when {
-            tilt > 1.5f -> left
-            tilt < -1.5f -> right
-            else -> stopped
-        }
-    }
-    */
 
     // This update method will be called from update in KotlinDrivingView
     // It determines if the player's ship needs to move and changes the coordinates
