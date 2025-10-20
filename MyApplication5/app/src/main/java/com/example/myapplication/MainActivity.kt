@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
         val updater = Updater(this, layout, size)
 
         val background = findViewById<ImageView>(R.id.imageView2)
+        //Add a background obj and have it change between the 3 images in a loop needs to be runnable might need a poster
         val ob = Obstacle(tilter, this, layout, 1f)
 
         val params = FrameLayout.LayoutParams(1080, 2424) // width x height in pixels
@@ -51,10 +52,8 @@ class MainActivity : ComponentActivity() {
         layout.bringChildToFront(tilter.textView)
         layout.addView(updater.playerCar!!.imageView)
         layout.bringChildToFront(updater.playerCar!!.imageView)
+        layout.bringChildToFront(updater.textView)
 
-
-        //car.translationX = 50f
-        //car.translationY = 350f
 
         Thread(updater).start()
     }

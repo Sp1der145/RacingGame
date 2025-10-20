@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.view.MotionEvent
 import android.view.SurfaceView
 import android.widget.FrameLayout
+import android.widget.TextView
 import kotlin.random.Random
 
 class Updater(context: Context, layout: FrameLayout, private val size: Point): Runnable {
@@ -19,9 +20,17 @@ class Updater(context: Context, layout: FrameLayout, private val size: Point): R
     private var lastObstacleSpawnTime = 0L
     private var startTime = System.currentTimeMillis()
     public var playerCar: PlayerCar? = null
+    public var textView: TextView? = null
 
 
     init {
+        textView = TextView(context)
+        textView?.text = "Score: $score Lives: $lives"
+        textView?.textSize = 20f;
+        textView?.translationX = 100f;
+        textView?.translationY = 100f;
+        layout.addView(textView)
+
         playerCar = PlayerCar(context, layout)
 
     }
@@ -55,6 +64,8 @@ class Updater(context: Context, layout: FrameLayout, private val size: Point): R
         // Increase score
         score += 1
 
+
+        textView?.text = "Score: $score Lives: $lives"
         // Move player
         playerCar!!.update(fps)
 

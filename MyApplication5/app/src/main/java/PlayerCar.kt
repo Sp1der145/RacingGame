@@ -37,13 +37,13 @@ class CarPoster(i: ImageView?, layout: FrameLayout) : Runnable {
     override fun run() {
         //val screenWidth = Resources.getSystem().displayMetrics.widthPixels
 
-        moving = right
+        moving = left
         // Move as long as it doesn't try and leave the Road
         if (moving == left && positionX > -375) {
-            positionX -= 8f
+            positionX -= 5f
         }
         else if (moving == right && positionX < 335) {
-            positionX += 8f
+            positionX += 5f
         }
 
         imageView?.translationX = positionX
