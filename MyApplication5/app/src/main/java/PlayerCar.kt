@@ -39,11 +39,11 @@ class CarPoster(i: ImageView?, layout: FrameLayout) : Runnable {
 
         moving = left
         // Move as long as it doesn't try and leave the Road
-        if (moving == left && positionX > -375) {
-            positionX -= 5f
+        if (moving == left && positionX > -425) {
+            positionX -= 8f //CAN CHANGE TO 20f FOR DIRECT TRANSLATION
         }
-        else if (moving == right && positionX < 335) {
-            positionX += 5f
+        else if (moving == right && positionX < 350) {
+            positionX += 8f //CAN CHANGE TO 20f FOR DIRECT TRANSLATION
         }
 
         imageView?.translationX = positionX

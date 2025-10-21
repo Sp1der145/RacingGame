@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.graphics.Point
 import android.graphics.RectF
 import android.os.Bundle
@@ -40,6 +41,9 @@ class MainActivity : ComponentActivity() {
         val updater = Updater(this, layout, size)
 
         val background = findViewById<ImageView>(R.id.imageView2)
+        background.scaleType = ImageView.ScaleType.CENTER_CROP
+        val backgroundLooper = BackgroundLooper(background, this, 150) // change every 150ms
+
         //Add a background obj and have it change between the 3 images in a loop needs to be runnable might need a poster
         val ob = Obstacle(tilter, this, layout, 1f)
 
@@ -48,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
         layout.addView(tilter)
         layout.bringChildToFront(background)
+        backgroundLooper.start()
         layout.bringChildToFront(ob.imageView)
         layout.bringChildToFront(tilter.textView)
         layout.addView(updater.playerCar!!.imageView)
@@ -59,3 +64,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+class BackgroundLooper(
+    private val imageView: ImageView,
+    private val context: Context,
+    private val interval: Long = 500L // milliseconds
+) {
+    private val images = arrayOf(
+        R.drawable.background3,
+        R.drawable.background4
+    )
+
+    private var currentIndex = 0
+    private var job: Job? = null
+
+    fun start() {
+        job = CoroutineScope(Dispatchers.Main).launch {
+            while (isActive) {
+                imageView.setImageResource(images[currentIndex])
+                currentIndex = (currentIndex + 1) % images.size
+                delay(interval)
+            }
+        }
+    }
+
+    fun stop() {
+        job?.cancel()
+    }
+}
