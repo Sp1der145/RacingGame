@@ -5,9 +5,11 @@ import android.graphics.Point
 import android.graphics.RectF
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 
 class CarPoster(private val imageView: ImageView) : Runnable {
-
     companion object {
         var positionX = 0f
         var moving = stopped
@@ -44,6 +46,9 @@ class PlayerCar(
         val carWidth = 600
         val carHeight = 1200
         val params = FrameLayout.LayoutParams(carWidth, carHeight)
+        params.leftMargin = 275
+        params.topMargin = 800
+        imageView?.layoutParams = params
 
         // --- Start in the middle
         params.leftMargin = (screenSize.x / 2) - (carWidth / 2)
