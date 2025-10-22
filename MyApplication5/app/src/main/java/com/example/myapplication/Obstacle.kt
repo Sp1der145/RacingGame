@@ -41,7 +41,7 @@ class Obstacle(t: Tilter, context: Context, frameLayout: FrameLayout, speedMulti
 
         val random = Random(System.currentTimeMillis())
 
-        val obstacleImages = listOf(
+        val obstacleImages = listOf( //To make the images come 'closer' have them loop from 1-3 based on an interval based on their speed
             R.drawable.semi1,
             R.drawable.lambo1,
             R.drawable.sign1
