@@ -43,16 +43,13 @@ class PlayerCar(
         imageView.setImageResource(R.drawable.car1)
 
         // --- Set size & position
-        val carWidth = 600
-        val carHeight = 1200
+        val carWidth = 400
+        val carHeight = 800
         val params = FrameLayout.LayoutParams(carWidth, carHeight)
-        params.leftMargin = 275
-        params.topMargin = 800
-        imageView?.layoutParams = params
 
         // --- Start in the middle
         params.leftMargin = (screenSize.x / 2) - (carWidth / 2)
-        params.topMargin = screenSize.y - carHeight - 150 // Positioned near bottom
+        params.topMargin = screenSize.y - carHeight + 10 // Positioned near bottom
         imageView.layoutParams = params
 
         // --- Initial translation

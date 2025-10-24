@@ -22,9 +22,9 @@ class Obstacle(private val context: Context, private val layout: FrameLayout, pr
         var num = Random.nextInt(0, 3);
 
         val targets = listOf(
-            -210,
-            110,
-            510,
+            -600,
+            0,
+            600,
         )
         targetX = targets[num];
 
@@ -69,11 +69,11 @@ class Obstacle(private val context: Context, private val layout: FrameLayout, pr
         if (imageView.translationY < -100){
             imageView.translationY = -100f
         }
-        imageView.translationX = lerp(110f, targetX.toFloat(), imageView.translationY / 1200f)
-        if (imageView.translationY > 600) {
+        imageView.translationX = lerp(0f, targetX.toFloat(), (imageView.translationY+100) / 1200f)
+        if (imageView.translationY > 300) {
             imageView.setImageResource(image2);
         }
-        if (imageView.translationY > 1200){
+        if (imageView.translationY > 600){
             imageView.setImageResource(image3);
         }
     }
